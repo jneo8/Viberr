@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^music/', include('music.urls'),),
     url(r'^stocks/', views.Stocklist.as_view()),
     url(r'^jspp/', include('jspp.urls'),),
+    url(r'^superlist/', include('superlist.urls'),),
 
 ]
 
