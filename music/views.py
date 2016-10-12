@@ -2,15 +2,56 @@
 # from django.http import HttpResponse
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views import generic
-from django.views.generic import View
+from django.views.generic import View, FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Album, Song
-from .forms import UserForm
+from .forms import UserForm, LoginForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class IndexView(generic.ListView):
+class LoginView(View):
+    form_class = LoginForm
+    template_name = 'music/login.html'
+
+    # display blank LoginForm
+    def get(self, request):
+        form = self.form_class(None)
+        return render(request, self.template_name, {'form': form})
+
+    # process user data
+    def post(self, request):
+        username = request.POST['username']
+        password = request.POST['password']
+        # 驗證帳號
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            if user.is_active:
+                # 登入後重導
+                login(request, user)
+                return redirect('music:index')
+        else:
+            form = self.form_class(request.POST)
+            # not login
+            return render(request, self.template_name, {'form': form, 'error_message': 'Account or password error'})
+
+
+class LogoutView(View):
+    templates_name = 'music/login.html'
+    form_class = LoginForm
+
+    def get(self, request):
+        form = self.form_class(None)
+        logout(request)
+
+        return render(request, self.template_name, {'form': form, 'error_message': 'Logout success!'})
+
+
+class IndexView(LoginRequiredMixin, generic.ListView):
+
+    login_url = "/music/login/"
     template_name = "music/index.html"
     # default is object_list
     context_object_name = "albums"
@@ -19,24 +60,24 @@ class IndexView(generic.ListView):
         return Album.objects.all()
 
 
-class DetailView(generic.DetailView):
+class DetailView(LoginRequiredMixin, generic.DetailView):
     model = Album
     template_name = 'music/detail.html'
 
 
-class AlbumCreate(CreateView):
+class AlbumCreate(LoginRequiredMixin, CreateView):
     model = Album
     fields = ['artist', 'album_title', 'genre', 'album_logo']
 
 
-class AlbumUpdate(UpdateView):
+class AlbumUpdate(LoginRequiredMixin, UpdateView):
     model = Album
     fields = ['artist', 'album_title', 'genre', 'album_logo']
 
     model = Album
 
 
-class AlbumDelete(DeleteView):
+class AlbumDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('music:index')
     fields = ['artist', 'album_title', 'genre', 'album_logo']
 
@@ -56,6 +97,7 @@ class UserFormView(View):
 
         # check data
         if form.is_valid():
+
             user = form.save(commit=False)
 
             # cleaned (normalized) data

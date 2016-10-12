@@ -6,6 +6,11 @@ urlpatterns = [
     # /music/
     url(r'^$', views.IndexView.as_view(), name='index'),
 
+    # /music/login/
+    url(r'^login/$', views.LoginView.as_view(), name='login'),
+    # /music/logout/
+    url(r'^login/$', views.LogoutView.as_view(), name='logout'),
+    # /music/register/
     url(r'^register/$', views.UserFormView.as_view(), name='register'),
 
     # /music/71/

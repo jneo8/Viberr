@@ -28,3 +28,4 @@ STATICFILES_DIRS = (
 # /vagrant/practice/website/media
 MEDIA_ROOT = os.path.join(PRO_DIR, "media")
 MEDIA_URL = '/media/'
+
