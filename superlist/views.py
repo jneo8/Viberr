@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+# from django.http import HttpResponse
 
 
 def home_page(request):
-    return HttpResponse('<html><title>To-Do lists</title></html>')
+    return render(request, 'superlist/home.html')
 
 # Create your views here.
