@@ -16,9 +16,9 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get('http://localhost:8090/superlist')
 
         # 網頁顯示出 To-Do
-        self.assertIn('To-Do', self.browser.title)
+        self.assertIn('To-Do lists', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('To-Do', header_text)
+        self.assertIn('Your To-Do lists', header_text)
 
         # user 受邀輸入一個代辦事項
         inputbox = self.browser.find_element_by_id('id_new_item')
