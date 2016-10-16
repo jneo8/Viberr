@@ -3,6 +3,7 @@ from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from .views import home_page
+from .models import Item
 
 
 class HomePageTest(TestCase):
@@ -40,5 +41,56 @@ class HomePageTest(TestCase):
             )
         # 由於csrf token 所以會報錯
         self.assertEqual(response.content.decode(), expected_html)
+
+class ItemModelTest(TestCase):
+
+    def test_saving_and_retriving_items(self):
+
+        # 建立兩筆資料並儲存
+        first_item = Item()
+        first_item.text = 'The first(ever) list item'
+        first_item.save()
+
+        second_item = Item()
+        second_item.text = 'Item the second'
+        second_item.save()
+
+        # 撈出兩筆資料並比對text attrubite的值
+        save_items = Item.objects.all()
+        self.assertEquest(save_items.count(), 2)
+
+        first_save_item = save_items[0]
+        second_save_item = save_items[1]
+        self.assertEqual(first_save_item.text, 'The first(ever) list item')
+        self.assertEqual(second_save_item.text, 'Item the second')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
