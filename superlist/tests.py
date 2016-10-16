@@ -57,7 +57,7 @@ class ItemModelTest(TestCase):
 
         # 撈出兩筆資料並比對text attrubite的值
         save_items = Item.objects.all()
-        self.assertEquest(save_items.count(), 2)
+        self.assertEqual(save_items.count(), 2)
 
         first_save_item = save_items[0]
         second_save_item = save_items[1]

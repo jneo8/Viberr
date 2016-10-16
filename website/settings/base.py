@@ -28,6 +28,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'jspp',
     'company',
+    'superlist',
     'music.apps.MusicConfig',
     'rest_framework',
     'django.contrib.admin',
