@@ -7,12 +7,15 @@
 </head>
 
 <body>
-    <h1>Start a new To-Do lists</h1>
-    <form method="POST">
+    <h1>Your To-Do lists</h1>
+    <form method="POST" action='{% url 'superlist:new_list' %}'>
         <input name="item_text" id="id_new_item" placeholder="Enter a to-do item"></input>
     </form>
     <table id="id_list_table">
-    
+    {% for item in  all_item %}
+        <tr><td>{{ item.id }}: {{ item.text }}</td></tr>
+        
+    {% endfor %}
         
     </table>
 </body>

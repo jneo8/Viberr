@@ -10,11 +10,18 @@ def home_page(request):
     if request.method == 'POST':
         Item.objects.create(text=request.POST['item_text'])
         # return redirect('superlist:home')
-        return redirect('/superlist/lists/the-only-list-in-the-world/')
-    all_item = Item.objects.all()
-    return render(request, 'superlist/home.html', {'all_item': all_item})
+        return redirect('superlist:view_list')
+    return render(request, 'superlist/home.html', {})
 
 def view_list(request):
     all_item = Item.objects.all()
-    return render(request, 'superlist/home.html', {'all_item': all_item})
+    return render(request, 'superlist/list.html', {'all_item': all_item})
+
+@csrf_exempt
+def new_list(request):
+    Item.objects.create(text=request.POST['item_text'])
+    # Item.objects.create(text='123')
+
+    return redirect('superlist:view_list')
+
 

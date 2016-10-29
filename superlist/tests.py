@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
+from django.core.urlresolvers import reverse
+
 from .views import home_page
 from .models import Item
 
@@ -26,44 +28,6 @@ class HomePageTest(TestCase):
         self.assertIn(b'<title>To-Do lists</title>', response.content)
         self.assertTrue(response.content.strip().endswith(b'</html>'))
 
-    def test_home_page_can_save_a_POST_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-
-        response = home_page(request)
-
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new list item')
-
-    def test_home_page_displays_all_list_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-
-        request = HttpRequest()
-        response = home_page(request)
-
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())
-
-
-
-    def test_home_page_redirects_after_POST(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
-
-        response = home_page(request)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/superlist/lists/the-only-list-in-the-world/')
-        
-    def test_home_page_only_saves_items_when_nessary(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
-
 class ItemModelTest(TestCase):
 
     def test_saving_and_retriving_items(self):
@@ -87,19 +51,36 @@ class ItemModelTest(TestCase):
         self.assertEqual(second_save_item.text, 'Item the second')
 
 class ListViewTest(TestCase):
-    """docstring for ListViewTest"""
+
+    def test_uses_lists_template(self):
+        response = self.client.get(reverse('superlist:view_list'))
+        self.assertTemplateUsed(response, 'superlist/list.html')
+
     def test_display_all_item(self):
         Item.objects.create(text='itemey 1')
         Item.objects.create(text='itemey 2')
 
-        response = self.client.get('/superlist/lists/the-only-list-in-the-world/')
+        response = self.client.get(reverse('superlist:view_list'))
 
         self.assertContains(response, 'itemey 1')
-        self.assertContains(response, 'itemey 2')
+        self.assertContains(response, 'itemey 2')     
 
+class NewListTest(TestCase):
 
-        
-
+    def test_saving_a_POST_request(self):
+        response = self.client.post(
+            reverse('superlist:new_list'),
+            data={'item_text': 'A new list item'}
+            )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], reverse('superlist:view_list'))
+       
+    def test_redirects_after_POST(self):
+        response = self.client.post(
+            reverse('superlist:new_list'),
+            data={'item_text': 'A new list item'}
+            )
+        self.assertRedirects(response, reverse('superlist:view_list'))
 
 
 
