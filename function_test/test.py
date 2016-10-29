@@ -2,12 +2,12 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from pyvirtualdisplay import Display
-import unittest
+# import unittest
 import time
 
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     # browser = webdriver.Safari()
 
@@ -23,11 +23,11 @@ class NewVisitorTest(unittest.TestCase):
     def check_for_row_in_list_table(self, row_text):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(row_text+"\ue007", [row.text for row in rows])
+        self.assertIn(row_text, [row.text for row in rows])
 
-    def test_can_start_a_list_and_retrieve_it_later(self):
-        self.browser.get('http://localhost:8090/superlist')
-        table = self.browser.find_element_by_id('id_list_table')
+    def test_can_start_a_list_and_retrieve_it_later(self):    
+        self.browser.get('%s%s' % (self.live_server_url, '/superlist'))
+        # table = self.browser.find_element_by_id('id_list_table')
 
 
         # 網頁顯示出 To-Do
@@ -63,19 +63,7 @@ class NewVisitorTest(unittest.TestCase):
         self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')       
 
 
-        # table = self.browser.find_element_by_id('id_list_table')
-        # rows = table.find_elements_by_tag_name('tr')
-        # # self.assertIn('1: Buy peacock feathers\ue007', [row.text for row in rows])
-        # self.assertIn('2: Use peacock feathers to make a fly\ue007', [row.text for row in rows])
-
-
-
-
-
-        # self.fail('finish the test!')
+       
+        self.fail('finish the test!')
 
         # now user的清單有兩個項目
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
-

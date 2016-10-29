@@ -29,3 +29,5 @@ STATICFILES_DIRS = (
 MEDIA_ROOT = os.path.join(PRO_DIR, "media")
 MEDIA_URL = '/media/'
 
+# os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8081/superlist/'
+
