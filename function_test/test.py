@@ -51,7 +51,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
         user1_list_url = self.browser.current_url
         # 檢查 user1_list_url 是否匹配正規表達式
-        self.assertRegex(user1_list_url, '/superlist/list/.+')
+        self.assertRegex(user1_list_url, '/superlist/lists/.+')
         # solution for StaleElementReferenceException
         time.sleep(2)
         # 檢查項目是否存在table中
@@ -68,7 +68,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # 再次更新網頁並檢查是否有兩個項目
         self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
-        self.check_for_row_in_list_table('1: Buy peacock feathers')       
+        self.check_for_row_in_list_table('1: Buy peacock feathers')      
    
         # 然後換成新的使用者user2進來;這邊先關掉遊覽器
         self.browser.quit()
@@ -86,7 +86,7 @@ class NewVisitorTest(LiveServerTestCase):
         time.sleep(2)
 
         user2_list_url = self.browser.current_url
-        self.assertRegex(user2_list_url, '/list/.+')
+        self.assertRegex(user2_list_url, 'superlist/lists/.+')
         # 確認user1的網址和user2的網址不相同
         self.assertNotEqual(user1_list_url, user2_list_url)
 
