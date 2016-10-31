@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 
 from .views import home_page
-from .models import Item
+from .models import Item, List
 
 
 class HomePageTest(TestCase):
@@ -28,27 +28,56 @@ class HomePageTest(TestCase):
         self.assertIn(b'<title>To-Do lists</title>', response.content)
         self.assertTrue(response.content.strip().endswith(b'</html>'))
 
-class ItemModelTest(TestCase):
+# class ItemModelTest(TestCase):
 
-    def test_saving_and_retriving_items(self):
+#     def test_saving_and_retriving_items(self):
 
-        # 建立兩筆資料並儲存
+#         # 建立兩筆資料並儲存
+#         first_item = Item()
+#         first_item.text = 'The first(ever) list item'
+#         first_item.save()
+
+#         second_item = Item()
+#         second_item.text = 'Item the second'
+#         second_item.save()
+
+#         # 撈出兩筆資料並比對text attrubite的值
+#         save_items = Item.objects.all()
+#         self.assertEqual(save_items.count(), 2)
+
+#         first_save_item = save_items[0]
+#         second_save_item = save_items[1]
+#         self.assertEqual(first_save_item.text, 'The first(ever) list item')
+#         self.assertEqual(second_save_item.text, 'Item the second')
+
+class ListAndItemModelsTest(TestCase):
+    def test_saving_and_retrieving_items(self):
+        list_ = List()
+        list_.save()
+
         first_item = Item()
-        first_item.text = 'The first(ever) list item'
+        first_item.text = 'The first (ever) list item'
+        first_item.list = list_
         first_item.save()
 
         second_item = Item()
         second_item.text = 'Item the second'
+        second_item.list = list_
         second_item.save()
 
-        # 撈出兩筆資料並比對text attrubite的值
-        save_items = Item.objects.all()
-        self.assertEqual(save_items.count(), 2)
+        save_list = List.objects.all()
+        self.assertEqual(save_list, list_)
 
-        first_save_item = save_items[0]
-        second_save_item = save_items[1]
-        self.assertEqual(first_save_item.text, 'The first(ever) list item')
-        self.assertEqual(second_save_item.text, 'Item the second')
+        saved_items = Item.objects.all()
+        self.assertEqual(saved_items.count(), 2)
+
+        first_saved_item = saved_items[0]
+        second_saved_item = saved_items[1]
+        self.assertEqual(first_saved_item.text, 'The first (ever) list item')
+        self.assertEqual(first_saved_item.list, list_)
+        self.assertEqual(second_saved_item.text, 'Item the second')
+        self.assertEqual(second_saved_item.list, list_)
+
 
 class ListViewTest(TestCase):
 
