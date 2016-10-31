@@ -9,13 +9,13 @@ urlpatterns = [
 
     # /superlist/list/new
     # add new list
-    url(r'^lists/new$', views.new_list, name='new_list'),
+    url(r'^new$', views.new_list, name='new_list'),
     # /superlist/list/77
     # show special list
-    url(r'^lists/(\d+)/$', views.view_list, name='view_list'),
+    url(r'^(\d+)/$', views.view_list, name='view_list'),
 
     # /superlist/list/77/add_item
     # add new item to a special list
-    url(r'^lists/(\d+)/add_item$', views.add_item, name='add_item'),   
+    url(r'^(\d+)/add_item$', views.add_item, name='add_item'),   
    
 ]

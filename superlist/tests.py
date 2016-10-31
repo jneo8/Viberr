@@ -84,7 +84,6 @@ class ListViewTest(TestCase):
 
     def test_uses_lists_template(self):
         list_ = List.objects.create()
-        # response = self.client.get(reverse('/superlist/lists/%d/' % (list_.id,)))
         response = self.client.get(
             reverse('superlist:view_list', args=[list_.id], ))
 
@@ -109,7 +108,8 @@ class ListViewTest(TestCase):
         Item.objects.create(text='other itemey 1', list=other_list)
         Item.objects.create(text='other itemey 2', list=other_list)
 
-        response = self.client.get('/superlist/lists/%d/' % correct_list.id)
+        # response = self.client.get('/superlist/lists/%d/' % correct_list.id)
+        response = self.client.get(reverse('superlist:view_list', args=[correct_list.id]))
         # self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, 'itemey 1')
@@ -119,11 +119,11 @@ class ListViewTest(TestCase):
         self.assertNotContains(response, 'other itemey 2')
 
     # 測試correct_list 參數是否有傳進html
-    # def test_passes_correct_list_to_templates(self):
-    #     other_list = List.objects.create()
-    #     correct_list = List.objects.create()
-    #     response = self.client.get(reverse('superlist:view_list', args=[correct_list.id]),)
-    #     self.assertEqual(response.context['list'], correct_list )
+    def test_passes_correct_list_to_templates(self):
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+        response = self.client.get(reverse('superlist:view_list', args=[correct_list.id]),)
+        self.assertEqual(response.context['list'], correct_list )
 
 
 class NewListTest(TestCase):
@@ -133,7 +133,7 @@ class NewListTest(TestCase):
         correct_list = List.objects.create()
         text_1 = 'A new item for an existing list'
         self.client.post(
-            '/superlist/lists/%d/add_item' % (correct_list.id,),
+            reverse('superlist:add_item', args=[correct_list.id]),
             data={'item_text': text_1}
         )
 
