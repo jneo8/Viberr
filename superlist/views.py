@@ -14,7 +14,10 @@ def home_page(request):
     return render(request, 'superlist/home.html', {})
 
 def view_list(request, list_id):
-    list_ = List.objects.get(id=list_id)
+    try:
+        list_ = List.objects.get(id=list_id)
+    except:
+        return render(request, 'superlist/home.html', {})
     # items = Item.objects.filter(list=list_)
     return render(request, 'superlist/list.html', {'list': list_})
 
