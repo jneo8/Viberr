@@ -34,7 +34,7 @@ class NewVisitorTest(LiveServerTestCase):
         # 網頁顯示出 To-Do
         self.assertIn('To-Do lists', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('Your To-Do lists', header_text)
+        self.assertIn('Start a new To-Do lists', header_text)
 
         # user1 受邀輸入一個代辦事項
         inputbox = self.browser.find_element_by_id('id_new_item')
@@ -51,7 +51,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
         user1_list_url = self.browser.current_url
         # 檢查 user1_list_url 是否匹配正規表達式
-        self.assertRegex(user1_list_url, '/list/.+')
+        self.assertRegex(user1_list_url, '/superlist/list/.+')
         # solution for StaleElementReferenceException
         time.sleep(2)
         # 檢查項目是否存在table中

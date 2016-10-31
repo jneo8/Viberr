@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Item
+from .models import Item, List
 
 
 @csrf_exempt
@@ -13,15 +13,14 @@ def home_page(request):
         return redirect('superlist:view_list')
     return render(request, 'superlist/home.html', {})
 
-def view_list(request):
-    all_item = Item.objects.all()
-    return render(request, 'superlist/list.html', {'all_item': all_item})
+def view_list(request, list_id):
+    list_ = List.objects.get(id=list_id)
+    items = Item.objects.filter(list=list_)
+    return render(request, 'superlist/list.html', {'all_item': items})
 
 @csrf_exempt
 def new_list(request):
-    Item.objects.create(text=request.POST['item_text'])
-    # Item.objects.create(text='123')
+    list_ = List.objects.create()
+    Item.objects.create(text=request.POST['item_text'], list=list_)
 
-    return redirect('superlist:view_list')
-
-
+    return redirect('superlist:view_list', list_.id)
