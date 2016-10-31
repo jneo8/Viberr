@@ -110,32 +110,3 @@ class NewListTest(TestCase):
             data={'item_text': 'A new list item'}
             )
         self.assertRedirects(response, reverse('superlist:view_list'))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
