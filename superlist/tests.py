@@ -118,6 +118,13 @@ class ListViewTest(TestCase):
         self.assertNotContains(response, 'other itemey 1')
         self.assertNotContains(response, 'other itemey 2')
 
+    # 測試correct_list 參數是否有傳進html
+    # def test_passes_correct_list_to_templates(self):
+    #     other_list = List.objects.create()
+    #     correct_list = List.objects.create()
+    #     response = self.client.get(reverse('superlist:view_list', args=[correct_list.id]),)
+    #     self.assertEqual(response.context['list'], correct_list )
+
 
 class NewListTest(TestCase):
 
@@ -140,12 +147,11 @@ class NewListTest(TestCase):
         correct_list = List.objects.create()
         text_1 = 'A new item for an existing list'
         response = self.client.post(
-            '/superlist/lists/%d/add_item' % (correct_list.id,),
+            reverse('superlist:add_item', args=[correct_list.id]),
             data={'item_text': text_1}
         )
 
-        self.assertRedirects(response, '/superlist/lists/%d' %
-                             (correct_list.id,))
+        self.assertRedirects(response, reverse('superlist:view_list', args=[correct_list.id]))
 
     def test_saving_a_POST_request(self):
         response = self.client.post(

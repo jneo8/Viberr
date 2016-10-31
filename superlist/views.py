@@ -15,8 +15,8 @@ def home_page(request):
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
-    items = Item.objects.filter(list=list_)
-    return render(request, 'superlist/list.html', {'all_item': items})
+    # items = Item.objects.filter(list=list_)
+    return render(request, 'superlist/list.html', {'list': list_})
 
 @csrf_exempt
 def new_list(request):
@@ -24,3 +24,11 @@ def new_list(request):
     Item.objects.create(text=request.POST['item_text'], list=list_)
 
     return redirect('superlist:view_list', list_.id)
+
+@csrf_exempt
+def add_item(request, list_id):
+    list_ = List.objects.get(id=list_id)
+    Item.objects.create(text=request.POST['item_text'], list=list_)
+
+    return redirect('superlist:view_list', list_.id)
+
