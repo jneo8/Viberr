@@ -40,6 +40,7 @@ TEMPLATES = [
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
+    # {% load staticfiles %}
     # /vagrant/practice/website/static/
     os.path.join(PRO_DIR, "static"),
 )
