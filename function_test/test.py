@@ -13,15 +13,15 @@ class NewVisitorTest(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         for arg in sys.argv:
-            if 'lifeserver' in arg:
-                cls.server_url = 'http://'+arg.split("=")
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
                 return
         super().setUpClass()
         cls.server_url = cls.live_server_url
 
     @classmethod
     def tearDownClass(cls):
-        if cls.server_url == cls.live_server_url:
+        if cls.server_url == cls.server_url:
             super().tearDownClass()
     def setUp(self):
         display = Display(visible=0, size=(800, 800))
@@ -39,7 +39,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertIn(row_text, [row.text for row in rows])
 
     def test_can_start_a_list_and_retrieve_it_later(self):
-        self.browser.get('%s%s' % (self.live_server_url, '/superlist'))
+        self.browser.get('%s%s' % (self.server_url, '/superlist'))
         # table = self.browser.find_element_by_id('id_list_table')
 
         # 網頁顯示出 To-Do
@@ -87,7 +87,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.browser = webdriver.Chrome()
 
         # user2造訪首頁並且清單內無顯示任何user1的Item
-        self.browser.get('%s%s' % (self.live_server_url, '/superlist'))
+        self.browser.get('%s%s' % (self.server_url, '/superlist'))
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
 
@@ -109,7 +109,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         # self.fail('finish the test!')
     def test_layout_and_styling(self):
         # user 前往首頁
-        self.browser.get('%s%s' % (self.live_server_url, '/superlist'))
+        self.browser.get('%s%s' % (self.server_url, '/superlist'))
         self.browser.set_window_size(1024, 768)
 
         # user發現輸入方塊被妥善置中
