@@ -1,3 +1,4 @@
+import sys
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -8,8 +9,20 @@ import time
 
 class NewVisitorTest(StaticLiveServerTestCase):
 
-    # browser = webdriver.Safari()
+    # 啟動測試伺服器
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if 'lifeserver' in arg:
+                cls.server_url = 'http://'+arg.split("=")
+                return
+        super().setUpClass()
+        cls.server_url = cls.live_server_url
 
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super().tearDownClass()
     def setUp(self):
         display = Display(visible=0, size=(800, 800))
         display.start()
