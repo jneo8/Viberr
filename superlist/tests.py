@@ -25,30 +25,8 @@ class HomePageTest(TestCase):
         self.assertEqual(response.content.decode(), expected_html)
         # response.content是原始位元組，必須使用 b'' 語法來進行比較
         self.assertTrue(response.content.startswith(b'<!DOCTYPE html>'))
-        self.assertIn(b'<title>To-Do lists</title>', response.content)
+        self.assertIn(b'<title>To-Do lists | Homepage</title>', response.content)
         self.assertTrue(response.content.strip().endswith(b'</html>'))
-
-# class ItemModelTest(TestCase):
-
-#     def test_saving_and_retriving_items(self):
-
-#         # 建立兩筆資料並儲存
-#         first_item = Item()
-#         first_item.text = 'The first(ever) list item'
-#         first_item.save()
-
-#         second_item = Item()
-#         second_item.text = 'Item the second'
-#         second_item.save()
-
-#         # 撈出兩筆資料並比對text attrubite的值
-#         save_items = Item.objects.all()
-#         self.assertEqual(save_items.count(), 2)
-
-#         first_save_item = save_items[0]
-#         second_save_item = save_items[1]
-#         self.assertEqual(first_save_item.text, 'The first(ever) list item')
-#         self.assertEqual(second_save_item.text, 'Item the second')
 
 
 class ListAndItemModelsTest(TestCase):
@@ -108,9 +86,9 @@ class ListViewTest(TestCase):
         Item.objects.create(text='other itemey 1', list=other_list)
         Item.objects.create(text='other itemey 2', list=other_list)
 
-        # response = self.client.get('/superlist/lists/%d/' % correct_list.id)
-        response = self.client.get(reverse('superlist:view_list', args=[correct_list.id]))
-        # self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            reverse('superlist:view_list', args=[correct_list.id]))
+        self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
@@ -122,8 +100,9 @@ class ListViewTest(TestCase):
     def test_passes_correct_list_to_templates(self):
         other_list = List.objects.create()
         correct_list = List.objects.create()
-        response = self.client.get(reverse('superlist:view_list', args=[correct_list.id]),)
-        self.assertEqual(response.context['list'], correct_list )
+        response = self.client.get(
+            reverse('superlist:view_list', args=[correct_list.id]),)
+        self.assertEqual(response.context['list'], correct_list)
 
 
 class NewListTest(TestCase):
@@ -151,7 +130,8 @@ class NewListTest(TestCase):
             data={'item_text': text_1}
         )
 
-        self.assertRedirects(response, reverse('superlist:view_list', args=[correct_list.id]))
+        self.assertRedirects(response, reverse(
+            'superlist:view_list', args=[correct_list.id]))
 
     def test_saving_a_POST_request(self):
         response = self.client.post(

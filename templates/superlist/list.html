@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "superlist/base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>To-Do lists</title>
-</head>
+{% block title %}{{ block.super }} | List{% endblock title %}
 
-<body>
-    <h1>Your To-Do lists</h1>
-    <form method="POST" action='{% url 'superlist:add_item' list.id %}'>
-        <input name="item_text" id="id_new_item" placeholder="Enter a to-do item"></input>
-    </form>
-    <table id="id_list_table">
+{% block header_text %}Your To-Do lists{% endblock header_text %}
+
+{% block form_action %}{% url 'superlist:add_item' list.id %}{% endblock form_action %}
+
+{% block table %}
     {% for item in  list.item_set.all %}
         <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
         
     {% endfor %}
-        
-    </table>
-</body>
-
-</html>
+{% endblock table %}

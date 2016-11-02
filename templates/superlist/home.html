@@ -1,20 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>To-Do lists</title>
-</head>
-
-<body>
-    <h1>Start a new To-Do lists</h1>
-    <form method="POST" action='{% url 'superlist:new_list' %}'>
-        <input name="item_text" id="id_new_item" placeholder="Enter a to-do item"></input>
-    </form>
-    <table id="id_list_table">
-    
-        
-    </table>
-</body>
-
-</html>
+{% extends "superlist/base.html" %}
+{% block title %}{{ block.super }} | Homepage{% endblock title %}
+{% block header_text %}Start a new To-Do lists{% endblock header_text %}
+{% block form_action %}{% url 'superlist:new_list' %}{% endblock form_action %}
+{% block table %}{% endblock table %}
