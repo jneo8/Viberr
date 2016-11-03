@@ -4,7 +4,7 @@ DEBUG = False
 TEMPLATES_DEBUG = DEBUG
 
 # Need when debug =false
-ALLOWED_HOSTS=['52.196.216.28:8090']
+ALLOWED_HOSTS=['52.196.216.28']
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')g%oavl$ag(vx(n0r*%&mihh%)#c8(@2v-fp*x119o_@-ik)bd'
