@@ -39,11 +39,14 @@ TEMPLATES = [
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    # {% load staticfiles %}
-    # /vagrant/practice/website/static/
-    os.path.join(PRO_DIR, "static"),
-)
+# STATICFILES_DIRS = (
+#     # {% load staticfiles %}
+#     # /vagrant/practice/website/static/
+#     os.path.join(PRO_DIR, "static"),
+# )
+
+STATIC_ROOT = os.path.join(PRO_DIR, "static")
+
 # /vagrant/practice/website/media
 MEDIA_ROOT = os.path.join(PRO_DIR, "media")
 MEDIA_URL = '/media/'
