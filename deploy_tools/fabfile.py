@@ -26,9 +26,6 @@ def deploy():
     _set_nginx(project_folder)
 
 
-def _test():
-    run('cd /home/ubuntu && mkdir d_test')
-
 
 def _create_directory_structure_if_necessary(site_folder, project_folder):
 
@@ -77,12 +74,17 @@ def _set_nginx(project_folder):
     # ln -s to sites-enabled
     if not exists('/etc/nginx/sites-enabled/%s' % (nginx_name)):
         run('sudo ln -s /etc/nginx/sites-available/%s /etc/nginx/sites-enabled/%s ' % (nginx_name, nginx_name))
+    else:
+        run('sudo rm  /etc/nginx/sites-enabled/%s' %(nginx_name))
+        run('sudo ln -s /etc/nginx/sites-available/%s /etc/nginx/sites-enabled/%s ' % (nginx_name, nginx_name))
+
     run('sed s/SITENAME/%s/g \
         %s/deploy_tools/gunicorn-upstart.template.conf | \
         sudo tee /etc/init/%s' % (env.host, project_folder, gunicorn_upstart_name+'.conf'))
 
     run('sudo service nginx reload')
-    run('sudo start %s' % gunicorn_upstart_name)
+
+    run('sudo restart %s' % gunicorn_upstart_name)
 
 
 
