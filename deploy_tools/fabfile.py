@@ -64,8 +64,8 @@ def _update_database(project_folder):
 
 
 def _set_nginx(project_folder):
-    nginx_name = 'viberr_test_nginx'
-    gunicorn_upstart_name = 'viberr_test_gunicorn-upstart'
+    nginx_name = 'viberr_nginx'
+    gunicorn_upstart_name = 'viberr_gunicorn-upstart'
     # 設定 /etc/nignx/viberr_test_nginx
     run('sed "s/SITENAME/%s/g" \
         %s/deploy_tools/nginx.template.conf | \
@@ -82,8 +82,12 @@ def _set_nginx(project_folder):
         sudo tee /etc/init/%s' % (env.host, project_folder, gunicorn_upstart_name+'.conf'))
 
     run('sudo service nginx reload')
+    try:
+        run('sudo start %s' % gunicorn_upstart_name)
+    except:
+        run('sudo stop %s' % gunicorn_upstart_name)
+        run('sudo start %s' % gunicorn_upstart_name)
 
-    run('sudo start %s' % gunicorn_upstart_name)
 
 
 
