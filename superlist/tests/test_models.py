@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from ..models import Item, List
-
 
 
 class ListAndItemModelsTest(TestCase):
@@ -39,9 +39,13 @@ class ListAndItemModelsTest(TestCase):
         # must get ValidationError
         with self.assertRaises(ValidationError):
             # model save won't get error
-            # 
+            #
             item.save()
             # 手動執行完整驗證, because text(blank=False), it will get error
             item.full_clean()
 
-
+    def test_get_absolute_url(self):
+        list_ = List.objects.create()
+        self.assertEqual(list_.get_absolute_url(), reverse(
+            'superlist:view_list', args=[list_.id], ))
+        

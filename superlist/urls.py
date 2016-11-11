@@ -6,16 +6,10 @@ urlpatterns = [
     # /superlist/
     # /show nothing but homepage
     url(r'^$', views.home_page, name='home'),
-
     # /superlist/list/new
     # add new list
     url(r'^new$', views.new_list, name='new_list'),
     # /superlist/list/77
     # show special list
     url(r'^(\d+)/$', views.view_list, name='view_list'),
-
-    # # /superlist/list/77/add_item
-    # # add new item to a special list
-    # url(r'^(\d+)/add_item$', views.add_item, name='add_item'),   
-   
 ]

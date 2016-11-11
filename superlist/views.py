@@ -5,16 +5,16 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Item, List
 
 
-@csrf_exempt
+
 def home_page(request):
 
-    if request.method == 'POST':
-        Item.objects.create(text=request.POST['item_text'])
-        # return redirect('superlist:home')
-        return redirect('superlist:view_list')
+    # if request.method == 'POST':
+    #     Item.objects.create(text=request.POST['item_text'])
+    #     # return redirect('superlist:home')
+    #     return redirect('superlist:view_list')
     return render(request, 'superlist/home.html', {})
 
-
+@csrf_exempt
 def view_list(request, list_id):
     error = None
     try:
@@ -25,7 +25,7 @@ def view_list(request, list_id):
                 item = Item(text=request.POST['item_text'], list=list_)
                 item.full_clean()
                 item.save()
-                return redirect('superlist:view_list', list_.id)
+                return redirect(list_)
             except ValidationError:
                 error = "You can't have an empty list item"
         return render(request, 'superlist/list.html', {'list': list_, 'error': error})
@@ -48,4 +48,4 @@ def new_list(request):
         list_.delete()
         error = "You can't have an empty list item"
         return render(request, 'superlist/home.html', {'error': error, })
-    return redirect('superlist:view_list', list_.id)
+    return redirect(list_)
