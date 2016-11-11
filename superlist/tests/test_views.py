@@ -65,7 +65,7 @@ class ListViewTest(TestCase):
         text_1 = 'A new item for an existing list'
         self.client.post(
             reverse('superlist:view_list', args=[correct_list.id]),
-            data={'item_text': text_1}
+            data={'text': text_1}
         )
 
         self.assertEqual(Item.objects.count(), 1)
@@ -79,7 +79,7 @@ class ListViewTest(TestCase):
         text_1 = 'A new item for an existing list'
         response = self.client.post(
             reverse('superlist:view_list', args=[correct_list.id]),
-            data={'item_text': text_1}
+            data={'text': text_1}
         )
 
         self.assertRedirects(response, reverse(
@@ -88,7 +88,7 @@ class ListViewTest(TestCase):
         list_ = List.objects.create()
         response = self.client.post(
             reverse('superlist:view_list', args=[list_.id]),
-            data={'item_text': ''},
+            data={'text': ''},
             )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'superlist/list.html')
@@ -102,7 +102,7 @@ class NewListTest(TestCase):
     def test_saving_a_POST_request(self):
         response = self.client.post(
             reverse('superlist:new_list'),
-            data={'item_text': 'A new list item'}
+            data={'text': 'A new list item'}
         )
         self.assertEqual(response.status_code, 302)
         new_list = List.objects.first()
@@ -112,7 +112,7 @@ class NewListTest(TestCase):
     def test_redirects_after_POST(self):
         response = self.client.post(
             reverse('superlist:new_list'),
-            data={'item_text': 'A new list item'})
+            data={'text': 'A new list item'})
 
         new_list = List.objects.first()
         self.assertRedirects(response, reverse(
@@ -121,7 +121,7 @@ class NewListTest(TestCase):
     def test_vaildation_errors_are_sent_back_to_home_page_templates(self):
         response = self.client.post(
             reverse('superlist:new_list'),
-            data={'item_text': ''}
+            data={'text': ''}
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'superlist/home.html')
@@ -132,7 +132,7 @@ class NewListTest(TestCase):
     def test_invalid_list_items_arent_saved(self):
         self.client.post(
             reverse('superlist:new_list'),
-            data={'item_text': ''}
+            data={'text': ''}
             )
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)

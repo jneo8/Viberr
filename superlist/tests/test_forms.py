@@ -7,7 +7,7 @@ class ItemFormTest(TestCase):
 
     # check the html of form
     @skip
-    def test_form_request_item_text_input(self):
+    def test_form_request_text_input(self):
         form = ItemForm()
         self.fail(form.as_p())
 

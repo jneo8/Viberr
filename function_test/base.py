@@ -32,3 +32,6 @@ class FunctionalTest(StaticLiveServerTestCase):
         # 使用 find_elements_  可以找到複數個tr標籤，再用迴圈去搜尋
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
+
+    def get_item_input_box(self):
+        return self.browser.find_element_by_id('id_text')
