@@ -3,21 +3,17 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Item, List
-from .forms import ItemForm
+from .forms import ItemForm, EMPTY_ITEM_ERROR
 
 
 
 def home_page(request):
-
-    # if request.method == 'POST':
-    #     Item.objects.create(text=request.POST['text'])
-    #     # return redirect('superlist:home')
-    #     return redirect('superlist:view_list')
     return render(request, 'superlist/home.html', {'form': ItemForm()})
 
 @csrf_exempt
 def view_list(request, list_id):
     error = None
+    form = ItemForm()
     try:
         list_ = List.objects.get(id=list_id)
 
@@ -28,25 +24,20 @@ def view_list(request, list_id):
                 item.save()
                 return redirect(list_)
             except ValidationError:
-                error = "You can't have an empty list item"
-        return render(request, 'superlist/list.html', {'list': list_, 'error': error})
+                error = EMPTY_ITEM_ERROR
+        return render(request, 'superlist/list.html', {'list': list_, 'error': error, 'form': form})
 
     except:
-        return render(request, 'superlist/home.html', {})
-
-    # # items = Item.objects.filter(list=list_)
-    # return render(request, 'superlist/list.html', {'list': list_})
-
+        return render(request, 'superlist/home.html', {'form': form})
 
 @csrf_exempt
 def new_list(request):
-    list_ = List.objects.create()
-    item = Item(text=request.POST['text'], list=list_)
-    try:
-        item.full_clean()
-        item.save()
-    except ValidationError:
-        list_.delete()
-        error = "You can't have an empty list item"
-        return render(request, 'superlist/home.html', {'error': error, })
-    return redirect(list_)
+    form = ItemForm(data=request.POST)
+    if form.is_valid():
+        list_ = List.objects.create()
+        Item.objects.create(text=request.POST['text'], list=list_)
+        return redirect(list_)
+    else:
+        return render(request, 'superlist/home.html', {'form': form})
+
+

@@ -1,13 +1,12 @@
 from django.test import TestCase
-from django.core.urlresolvers import resolve
+from django.core.urlresolvers import resolve, reverse
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from django.core.urlresolvers import reverse
 from django.utils.html import escape
 
 from ..views import home_page
 from ..models import Item, List
-from ..forms import ItemForm
+from ..forms import ItemForm, EMPTY_ITEM_ERROR
 
 
 class HomePageTest(TestCase):
@@ -92,11 +91,16 @@ class ListViewTest(TestCase):
             )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'superlist/list.html')
-        expected_error = escape("You can't have an empty list item")
+        expected_error = escape(EMPTY_ITEM_ERROR)
         self.assertContains(response, expected_error)
 
+    def test_display_item_form(self):
+        list_ = List.objects.create()
+        response = self.client.get(
+            reverse('superlist:view_list', args=[list_.id]))
+        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertContains(response, 'name="text"')
 
-    
 class NewListTest(TestCase):
 
     def test_saving_a_POST_request(self):
@@ -136,6 +140,23 @@ class NewListTest(TestCase):
             )
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
+
+    def test_for_invalid_input_renders_home_template(self):
+        response = self.client.post(reverse('superlist:new_list'), data={'text': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'superlist/home.html')
+
+    def test_validation_errors_are_shown_on_home_page(self):
+        response = self.client.post(reverse('superlist:new_list'), data={'text': ''})
+        self.assertContains(response, escape(EMPTY_ITEM_ERROR))
+
+    def test_for_invalid_input_passes_form_to_template(self):
+        response = self.client.post(reverse('superlist:new_list'), data={'text': ''})
+        self.assertIsInstance(response.context['form'], ItemForm)
+
+
+
+
 
 
 
