@@ -4,7 +4,7 @@
 
 {% block header_text %}Your To-Do lists{% endblock header_text %}
 
-{% block form_action %}{% url 'superlist:add_item' list.id %}{% endblock form_action %}
+{% block form_action %}{% url 'superlist:view_list' list.id %}{% endblock form_action %}
 
 {% block table %}
     <table id="id_list_table" class="table">

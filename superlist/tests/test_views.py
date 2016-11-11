@@ -40,16 +40,13 @@ class ListViewTest(TestCase):
 
         self.assertTemplateUsed(response, 'superlist/list.html')
 
-    def test_display_all_item(self):
-        list_ = List.objects.create()
-        Item.objects.create(text='itemey 1', list=list_)
-        Item.objects.create(text='itemey 2', list=list_)
-
+    # 測試correct_list 參數是否有傳進html
+    def test_passes_correct_list_to_templates(self):
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
         response = self.client.get(
-            reverse('superlist:view_list', args=[list_.id],))
-
-        self.assertContains(response, 'itemey 1')
-        self.assertContains(response, 'itemey 2')
+            reverse('superlist:view_list', args=[correct_list.id]),)
+        self.assertEqual(response.context['list'], correct_list)
 
     def test_displays_only_items_for_that_list(self):
         correct_list = List.objects.create()
@@ -69,23 +66,12 @@ class ListViewTest(TestCase):
         self.assertNotContains(response, 'other itemey 1')
         self.assertNotContains(response, 'other itemey 2')
 
-    # 測試correct_list 參數是否有傳進html
-    def test_passes_correct_list_to_templates(self):
-        other_list = List.objects.create()
-        correct_list = List.objects.create()
-        response = self.client.get(
-            reverse('superlist:view_list', args=[correct_list.id]),)
-        self.assertEqual(response.context['list'], correct_list)
-
-
-class NewListTest(TestCase):
-
     def test_can_save_a_POST_request_to_an_existing_list(self):
         other_list = List.objects.create()
         correct_list = List.objects.create()
         text_1 = 'A new item for an existing list'
         self.client.post(
-            reverse('superlist:add_item', args=[correct_list.id]),
+            reverse('superlist:view_list', args=[correct_list.id]),
             data={'item_text': text_1}
         )
 
@@ -99,12 +85,16 @@ class NewListTest(TestCase):
         correct_list = List.objects.create()
         text_1 = 'A new item for an existing list'
         response = self.client.post(
-            reverse('superlist:add_item', args=[correct_list.id]),
+            reverse('superlist:view_list', args=[correct_list.id]),
             data={'item_text': text_1}
         )
 
         self.assertRedirects(response, reverse(
             'superlist:view_list', args=[correct_list.id]))
+
+
+    
+class NewListTest(TestCase):
 
     def test_saving_a_POST_request(self):
         response = self.client.post(

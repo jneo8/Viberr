@@ -14,13 +14,19 @@ def home_page(request):
         return redirect('superlist:view_list')
     return render(request, 'superlist/home.html', {})
 
-def view_list(request, list_id):
+def view_list(request, list_id):  
     try:
         list_ = List.objects.get(id=list_id)
     except:
         return render(request, 'superlist/home.html', {})
-    # items = Item.objects.filter(list=list_)
+
+    if request.method == 'POST':
+        Item.objects.create(text=request.POST['item_text'], list = list_)
+        return redirect('superlist:view_list', list_.id)
     return render(request, 'superlist/list.html', {'list': list_})
+
+    # # items = Item.objects.filter(list=list_)
+    # return render(request, 'superlist/list.html', {'list': list_})
 
 @csrf_exempt
 def new_list(request):
@@ -35,10 +41,4 @@ def new_list(request):
         return render(request, 'superlist/home.html', {'error': error,})
     return redirect('superlist:view_list', list_.id)
 
-@csrf_exempt
-def add_item(request, list_id):
-    list_ = List.objects.get(id=list_id)
-    Item.objects.create(text=request.POST['item_text'], list=list_)
-
-    return redirect('superlist:view_list', list_.id)
 

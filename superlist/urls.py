@@ -14,8 +14,8 @@ urlpatterns = [
     # show special list
     url(r'^(\d+)/$', views.view_list, name='view_list'),
 
-    # /superlist/list/77/add_item
-    # add new item to a special list
-    url(r'^(\d+)/add_item$', views.add_item, name='add_item'),   
+    # # /superlist/list/77/add_item
+    # # add new item to a special list
+    # url(r'^(\d+)/add_item$', views.add_item, name='add_item'),   
    
 ]
