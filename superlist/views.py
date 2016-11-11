@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Item, List
+from .forms import ItemForm
 
 
 
@@ -12,7 +13,7 @@ def home_page(request):
     #     Item.objects.create(text=request.POST['item_text'])
     #     # return redirect('superlist:home')
     #     return redirect('superlist:view_list')
-    return render(request, 'superlist/home.html', {})
+    return render(request, 'superlist/home.html', {'form': ItemForm()})
 
 @csrf_exempt
 def view_list(request, list_id):

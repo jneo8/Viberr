@@ -7,28 +7,21 @@ from django.utils.html import escape
 
 from ..views import home_page
 from ..models import Item, List
+from ..forms import ItemForm
 
 
 class HomePageTest(TestCase):
+    maxDiff = None
 
-    # 測試url /superlist/ 是否有連接到 homepage 這個function
-    def test_root_url_resolvers(self):
-        found = resolve('/superlist/')
-        self.assertEqual(found.func, home_page)
+    def test_home_page_renders_home_templates(self):
+        response =self.client.get(reverse('superlist:home'))
+        # check used the correct html
+        self.assertTemplateUsed(response, 'superlist/home.html')
 
-    def test_home_page_return_correct_html(self):
-        # 建立HttpRequest物件
-        request = HttpRequest()
-        # 將request傳給home_page view, 會得到home_page回傳的response
-        response = home_page(request)
-        # 由於csrf token 所以會報錯
-        expected_html = render_to_string('superlist/home.html')
-        self.assertEqual(response.content.decode(), expected_html)
-        # response.content是原始位元組，必須使用 b'' 語法來進行比較
-        self.assertTrue(response.content.startswith(b'<!DOCTYPE html>'))
-        self.assertIn(b'<title>To-Do lists | Homepage</title>',
-                      response.content)
-        self.assertTrue(response.content.strip().endswith(b'</html>'))
+    def test_home_page_user_item_form(self):
+        response =self.client.get(reverse('superlist:home'))
+        # check used the correct form
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 
 class ListViewTest(TestCase):
