@@ -91,6 +91,16 @@ class ListViewTest(TestCase):
 
         self.assertRedirects(response, reverse(
             'superlist:view_list', args=[correct_list.id]))
+    def test_vaildation_errors_end_up_lists_page(self):
+        list_ = List.objects.create()
+        response = self.client.post(
+            reverse('superlist:view_list', args=[list_.id]),
+            data={'item_text': ''},
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'superlist/list.html')
+        expected_error = escape("You can't have an empty list item")
+        self.assertContains(response, expected_error)
 
 
     

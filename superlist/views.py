@@ -14,19 +14,28 @@ def home_page(request):
         return redirect('superlist:view_list')
     return render(request, 'superlist/home.html', {})
 
-def view_list(request, list_id):  
+
+def view_list(request, list_id):
+    error = None
     try:
         list_ = List.objects.get(id=list_id)
+
+        if request.method == 'POST':
+            try:
+                item = Item(text=request.POST['item_text'], list=list_)
+                item.full_clean()
+                item.save()
+                return redirect('superlist:view_list', list_.id)
+            except ValidationError:
+                error = "You can't have an empty list item"
+        return render(request, 'superlist/list.html', {'list': list_, 'error': error})
+
     except:
         return render(request, 'superlist/home.html', {})
 
-    if request.method == 'POST':
-        Item.objects.create(text=request.POST['item_text'], list = list_)
-        return redirect('superlist:view_list', list_.id)
-    return render(request, 'superlist/list.html', {'list': list_})
-
     # # items = Item.objects.filter(list=list_)
     # return render(request, 'superlist/list.html', {'list': list_})
+
 
 @csrf_exempt
 def new_list(request):
@@ -38,7 +47,5 @@ def new_list(request):
     except ValidationError:
         list_.delete()
         error = "You can't have an empty list item"
-        return render(request, 'superlist/home.html', {'error': error,})
+        return render(request, 'superlist/home.html', {'error': error, })
     return redirect('superlist:view_list', list_.id)
-
-
