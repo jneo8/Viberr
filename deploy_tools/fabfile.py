@@ -1,30 +1,25 @@
 # -*- coding:utf-8 -*-
-from fabric.contrib.files import append, exists, sed
+from fabric.contrib.files import exists
 from fabric.api import env, local, run
-import random
 
 # fabric doesn't support python3
 REPO_URL = 'https://github.com/jneo8/Viberr.git'
 
 env.hosts = ['52.196.216.28']
-SITENAME='viberr'
+SITENAME = 'viberr'
 env.user = 'ubuntu'
 env.key_filename = '/vagrant/practice/key_james0910238727.pem'
 
 
 def deploy():
-    # home/ubuntu/sites/viberr_52.196.216.28
     site_folder = '/home/%s/sites/%s' % (env.user, SITENAME)
-    # site_folder = '/vagrant/deploy_test'
     project_folder = site_folder + '/Viberr'
     _create_directory_structure_if_necessary(site_folder, project_folder)
     _get_latest_source(site_folder, project_folder)
-    # _update_setting(project_folder)
     _update_virtualenv(site_folder, project_folder)
     _update_static_files(project_folder)
     _update_database(project_folder)
     _set_nginx(project_folder)
-
 
 
 def _create_directory_structure_if_necessary(site_folder, project_folder):
@@ -72,14 +67,16 @@ def _set_nginx(project_folder):
      sudo tee /etc/nginx/sites-available/%s' % (env.host, project_folder, nginx_name))
     # ln -s to sites-enabled
     if not exists('/etc/nginx/sites-enabled/%s' % (nginx_name)):
-        run('sudo ln -s /etc/nginx/sites-available/%s /etc/nginx/sites-enabled/%s ' % (nginx_name, nginx_name))
+        run('sudo ln -s /etc/nginx/sites-available/%s /etc/nginx/sites-enabled/%s ' %
+            (nginx_name, nginx_name))
     else:
-        run('sudo rm  /etc/nginx/sites-enabled/%s' %(nginx_name))
-        run('sudo ln -s /etc/nginx/sites-available/%s /etc/nginx/sites-enabled/%s ' % (nginx_name, nginx_name))
+        run('sudo rm  /etc/nginx/sites-enabled/%s' % (nginx_name))
+        run('sudo ln -s /etc/nginx/sites-available/%s /etc/nginx/sites-enabled/%s ' %
+            (nginx_name, nginx_name))
 
     run('sed s/SITENAME/%s/g \
         %s/deploy_tools/gunicorn-upstart.template.conf | \
-        sudo tee /etc/init/%s' % (env.host, project_folder, gunicorn_upstart_name+'.conf'))
+        sudo tee /etc/init/%s' % (env.host, project_folder, gunicorn_upstart_name + '.conf'))
 
     run('sudo service nginx reload')
     try:
@@ -87,8 +84,3 @@ def _set_nginx(project_folder):
     except:
         run('sudo stop %s' % gunicorn_upstart_name)
         run('sudo start %s' % gunicorn_upstart_name)
-
-
-
-
-
