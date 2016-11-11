@@ -3,6 +3,7 @@ from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
+from django.utils.html import escape
 
 from ..views import home_page
 from ..models import Item, List
@@ -25,7 +26,8 @@ class HomePageTest(TestCase):
         self.assertEqual(response.content.decode(), expected_html)
         # response.content是原始位元組，必須使用 b'' 語法來進行比較
         self.assertTrue(response.content.startswith(b'<!DOCTYPE html>'))
-        self.assertIn(b'<title>To-Do lists | Homepage</title>', response.content)
+        self.assertIn(b'<title>To-Do lists | Homepage</title>',
+                      response.content)
         self.assertTrue(response.content.strip().endswith(b'</html>'))
 
 
@@ -117,8 +119,33 @@ class NewListTest(TestCase):
     def test_redirects_after_POST(self):
         response = self.client.post(
             reverse('superlist:new_list'),
-            data={'item_text': 'A new list item'}
-        )
+            data={'item_text': 'A new list item'})
+
         new_list = List.objects.first()
         self.assertRedirects(response, reverse(
             'superlist:view_list', args=[new_list.id], ))
+
+    def test_vaildation_errors_are_sent_back_to_home_page_templates(self):
+        response = self.client.post(
+            reverse('superlist:new_list'),
+            data={'item_text': ''}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'superlist/home.html')
+
+        expected_error = escape("You can't have an empty list item")
+        self.assertContains(response, expected_error)
+
+    def test_invalid_list_items_arent_saved(self):
+        self.client.post(
+            reverse('superlist:new_list'),
+            data={'item_text': ''}
+            )
+        self.assertEqual(List.objects.count(), 0)
+        self.assertEqual(Item.objects.count(), 0)
+
+
+
+
+
+
