@@ -18,12 +18,11 @@ class FunctionalTest(StaticLiveServerTestCase):
     def tearDownClass(cls):
         if cls.server_url == cls.server_url:
             super().tearDownClass()
-
     def setUp(self):
         display = Display(visible=0, size=(800, 800))
         display.start()
         self.browser = webdriver.Chrome()
-        self.browser.implicitly_wait(3)
+        self.browser.implicitly_wait(1)
     def tearDown(self):
         self.browser.quit()
 

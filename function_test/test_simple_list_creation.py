@@ -20,7 +20,6 @@ class NewVisitorTest(FunctionalTest):
             inputbox.get_attribute('placeholder'),
             'Enter a to-do item'
         )
-
         # 在文字方塊輸入 'Buy peacock feathers'
         inputbox.send_keys('Buy peacock feathers')
         # 按下enter時會帶使用者到新的URL
@@ -31,7 +30,7 @@ class NewVisitorTest(FunctionalTest):
         # 檢查 user1_list_url 是否匹配正規表達式
         self.assertRegex(user1_list_url, '/superlist/.+')
         # solution for StaleElementReferenceException
-        time.sleep(2)
+        time.sleep(1)
         # 檢查項目是否存在table中
         self.check_for_row_in_list_table('1: Buy peacock feathers')
 
@@ -42,7 +41,7 @@ class NewVisitorTest(FunctionalTest):
         # POST and refresh page
         inputbox.send_keys(Keys.ENTER)
         # solution for StaleElementReferenceException
-        time.sleep(2)
+        time.sleep(1)
 
         # 再次更新網頁並檢查是否有兩個項目
         self.check_for_row_in_list_table(
