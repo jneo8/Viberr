@@ -2,19 +2,17 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from rest_framework.urlpatterns import format_suffix_patterns
-from company import views
 
 urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
     url(r'^music/', include('music.urls'),),
-    url(r'^stocks/', views.Stocklist.as_view()),
     url(r'^jspp/', include('jspp.urls'),),
     url(r'^superlist/', include('superlist.urls'),),
-
+    url(r'^api/', include('website.api'),),
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns)
 # only work on developer mode
 if settings.DEBUG:
     from django.conf.urls.static import static

@@ -14,5 +14,5 @@ class Stocklist(APIView):
         serializers = StockSerializer(stocks, many=True)
         return Response(serializers.data)
 
-    def post(self):
+    def post(self, request):
         pass
