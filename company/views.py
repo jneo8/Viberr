@@ -15,4 +15,5 @@ class Stocklist(APIView):
         return Response(serializers.data)
 
     def post(self, request):
-        pass
+        
+        stocks = Stock.objects.create()

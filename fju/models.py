@@ -10,11 +10,15 @@ class University(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return str(self.id) + ' - ' + self.name
+
+
 
 class Student(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    university = models.ForeignKey(University)
+    university = models.ForeignKey(University, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Student"

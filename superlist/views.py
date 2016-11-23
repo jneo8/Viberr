@@ -1,6 +1,7 @@
 # from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 # from django.http import HttpResponse
+# csrf_exempt close the csrf check
 from django.views.decorators.csrf import csrf_exempt
 from .models import Item, List
 from .forms import ItemForm, ExistingListItemForm
@@ -8,7 +9,6 @@ from .forms import ItemForm, ExistingListItemForm
 
 def home_page(request):
     return render(request, 'superlist/home.html', {'form': ItemForm()})
-
 
 @csrf_exempt
 def view_list(request, list_id):
